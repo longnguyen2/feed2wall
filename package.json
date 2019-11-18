@@ -1,0 +1,17 @@
+{
+  "name": "feed2wall-server",
+  "version": "1.0.0",
+  "description": "Nodejs server that crawls data from multiple social network sources (Facebook, instagram, twitter, ...) and provides APIs to consume",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gigasource",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "lodash": "^4.17.15"
+  }
+}
