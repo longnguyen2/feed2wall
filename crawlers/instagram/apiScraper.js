@@ -44,7 +44,6 @@ async function scrape_profile(username, option) {
 
   const { data: fetchedData } = await instagramInstance.get(config.query_media + queryVariables);
   const result = {};
-  result['user_id'] = user['id'];
 
   return fetchedData;
 }
