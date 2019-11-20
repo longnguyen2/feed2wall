@@ -1,3 +1,4 @@
+const allSettled = require('promise.allsettled');
 const { last, get } = require('lodash');
 const axios = require('axios');
 
@@ -15,4 +16,19 @@ async function getPostData(url) {
   return returnObject;
 }
 
-module.exports = { getPostData }
+async function getPosts(urls) {
+  const settledPosts = await allSettled(urls.map(getPostData));
+
+  let resolvedPostsData = [];
+  let resolvedUrls = [];
+  settledPosts.forEach((p, idx) => {
+    if (p.status === 'fulfilled') {
+      resolvedPostsData.push(p.value);
+      resolvedUrls.push(urls[idx]);
+    }
+  });
+
+  return { resolvedUrls, resolvedPostsData };
+}
+
+module.exports = { getPosts }

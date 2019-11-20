@@ -1,32 +1,52 @@
-const { getPostData } = require('./utils');
+const { getPosts } = require('./utils');
+const { debounce, pullAll } = require('lodash');
 
 module.exports = class InstagramPage {
   constructor(page) {
     this.page = page;
     this.page.setting('loadImages', false);
+    this.url = '';
+    this.total = 0;
+    this.finishedUrls = [];
   }
 
   async initLoad(url, total) {
-    let urls = await this.scrollAndGetUrls(url);
-    urls = urls.slice(0, total);
-    return Promise.all(urls.map(getPostData));
-  }
+    this.url = url;
+    this.total = total;
 
-  async continueLoad(url, total, endCursor) {
-    let urls = await this.scrollAndGetUrls(url);
-    urls = urls.slice(endCursor, urls.length);
-    urls = urls.slice(0, total);
-    return Promise.all(urls.map(getPostData));
-  }
-
-  async scrollAndGetUrls(url) {
     await this.page.open(url);
-    const stringUrls = await this.page.evaluate(getPostsUrlScript);
-    return stringUrls.split(',');
+    let urls = await this.scrollAndGetUrls(5 * 1000);
+    urls = urls.slice(0, 5 < total ? 5: total); // fetch at most 5 posts for the first time
+
+    const { resolvedUrls, resolvedPostsData } = await getPosts(urls);
+    this.finishedUrls.push(resolvedUrls);
+    this.total -= resolvedPostsData.length;
+
+    return resolvedPostsData;
+  }
+
+  async continueLoad() {
+    let urls = await this.scrollAndGetUrls(1000);
+    urls = pullAll(urls, this.finishedUrls);
+    urls = urls.slice(0, this.total);
+
+    const { resolvedUrls, resolvedPostsData } = await getPosts(urls);
+    this.finishedUrls.push(resolvedUrls);
+    this.total -= resolvedPostsData.length;
+
+    return resolvedPostsData;
+  }
+
+  async scrollAndGetUrls(delay) {
+    let sleeper = function() {
+      return new Promise(resolve => setTimeout(() => resolve(), delay));
+    };
+    const hrefs = await Promise.resolve().then(sleeper()).then(() => this.page.evaluate(getPostsUrlScript));
+    return hrefs.split(',');
   }
 
   async destroy() {
-    this.page.close();
+    await this.page.close();
   }
 }
 
