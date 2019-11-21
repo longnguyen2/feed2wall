@@ -1,22 +1,20 @@
 const express = require('express');
 const app = express();
+const server = require('http').createServer(app);
 
-const { getInstagramPosts } = require('./crawlers');
+const cors = require('cors');
+app.use(cors());
 
-app.get('/instagram', async (req, res) => {
-  const { id, queryName, type, total } = req.query;
-  if (!!queryName && !!id) {
-    res.status(400).end('Bad request');
-  } else {
-    try {
-      const data = await getInstagramPosts(id, queryName, { type, total });
-      res.send(data);
-    } catch (e) {
-      console.error(e);
-      res.status(500).end('Internal server error');
-    }
-  }
-});
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+const instagramRoutes = require('./routes/instagram');
+app.use('/instagram', instagramRoutes);
+
+const settingRoutes = require('./routes/setting');
+app.use('/setting', settingRoutes);
+
+require('./socketIo')(server);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log('App is listen at port ' + port));
+server.listen(port, () => console.log('App is listen at port ' + port));

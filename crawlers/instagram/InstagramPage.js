@@ -1,17 +1,15 @@
 const { getPosts } = require('./utils');
-const { debounce, pullAll } = require('lodash');
+const { pullAll } = require('lodash');
 
 module.exports = class InstagramPage {
   constructor(page) {
     this.page = page;
     this.page.setting('loadImages', false);
-    this.url = '';
     this.total = 0;
     this.finishedUrls = [];
   }
 
   async initLoad(url, total) {
-    this.url = url;
     this.total = total;
 
     await this.page.open(url);
@@ -19,7 +17,7 @@ module.exports = class InstagramPage {
     urls = urls.slice(0, 5 < total ? 5: total); // fetch at most 5 posts for the first time
 
     const { resolvedUrls, resolvedPostsData } = await getPosts(urls);
-    this.finishedUrls.push(resolvedUrls);
+    this.finishedUrls = this.finishedUrls.concat(resolvedUrls);
     this.total -= resolvedPostsData.length;
 
     return resolvedPostsData;
@@ -31,7 +29,7 @@ module.exports = class InstagramPage {
     urls = urls.slice(0, this.total);
 
     const { resolvedUrls, resolvedPostsData } = await getPosts(urls);
-    this.finishedUrls.push(resolvedUrls);
+    this.finishedUrls = this.finishedUrls.concat(resolvedUrls);
     this.total -= resolvedPostsData.length;
 
     return resolvedPostsData;

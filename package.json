@@ -4,17 +4,25 @@
   "description": "Nodejs server that crawls data from multiple social network sources (Facebook, instagram, twitter, ...) and provides APIs to consume",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gigasource",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
     "phantom": "^6.3.0",
     "promise.allsettled": "^1.0.1",
+    "socket.io": "^2.3.0",
+    "socket.io-p2p-server": "^1.2.0",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
   }
 }
