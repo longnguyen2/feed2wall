@@ -1,7 +1,7 @@
 const allSettled = require('promise.allsettled');
 const axios = require('axios');
 
-async function getPostData(url) {
+async function getInstagramPostData(url) {
   const { data : jsonData } = await axios.get(`https://www.instagram.com${url}?__a=1`);
   const returnObject = {};
   returnObject['likeCount'] = jsonData['graphql']['shortcode_media']['edge_media_preview_like']['count'];
@@ -15,8 +15,8 @@ async function getPostData(url) {
   return returnObject;
 }
 
-async function getPosts(urls) {
-  const settledPosts = await allSettled(urls.map(getPostData));
+async function getInstagramPosts(urls) {
+  const settledPosts = await allSettled(urls.map(getInstagramPostData));
 
   let resolvedPostsData = [];
   let resolvedUrls = [];
@@ -30,4 +30,4 @@ async function getPosts(urls) {
   return { resolvedUrls, resolvedPostsData };
 }
 
-module.exports = { getPosts }
+module.exports = { getInstagramPosts }

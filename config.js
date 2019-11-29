@@ -1,3 +1,4 @@
 const authorizationKey = 'rockiton';
+const cookieKeys = ['web-config key'];
 
-module.exports = { authorizationKey };
+module.exports = { authorizationKey, cookieKeys };

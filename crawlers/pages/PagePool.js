@@ -1,5 +1,5 @@
 const phantom = require('phantom');
-const InstagramPage = require('./InstagramPage');
+const createCrawlerPage = require('./PageFactory').createCrawlerPage;
 const uuidv4 = require('uuid/v4');
 const { debounce } = require('lodash');
 
@@ -11,13 +11,13 @@ async function createPhantomInstance() {
   instance = await phantom.create();
 }
 
-async function createNewPage() {
+async function createNewPage(pageType) {
   if (Object.keys(pagePool).length === 0) {
     await createPhantomInstance();
   }
-  const page = await instance.createPage();
+  const phantomPage = await instance.createPage();
   const id = uuidv4();
-  pagePool[id] = new InstagramPage(page);
+  pagePool[id] = createCrawlerPage(pageType, phantomPage);
   createDestroyJob(id);
   return id;
 }

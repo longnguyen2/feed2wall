@@ -9,6 +9,4 @@ function authorize(req, res) {
   }
 }
 
-function isAuthorized(req, res) {
-
-}
+module.exports = { authorize };

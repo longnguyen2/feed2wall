@@ -8,11 +8,14 @@ app.use(cors());
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-const instagramRoutes = require('./routes/instagram');
+const instagramRoutes = require('./routes/instagramRoutes');
 app.use('/instagram', instagramRoutes);
 
-const settingRoutes = require('./routes/setting');
-app.use('/setting', settingRoutes);
+const twitterRoutes = require('./routes/twitterRoutes');
+app.use('/twitter', twitterRoutes);
+
+const webConfigRoutes = require('./routes/webConfigRoutes');
+app.use('/config', webConfigRoutes);
 
 require('./socketIo')(server);
 

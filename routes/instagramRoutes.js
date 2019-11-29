@@ -5,11 +5,11 @@ const { getInstagramPosts } = require('../crawlers');
 
 router.get('/', async (req, res) => {
   const { id, queryName, type, total } = req.query;
-  if (!!queryName && !!id) {
+  if (!queryName && !id) {
     res.status(400).end('Bad request');
   } else {
     try {
-      const data = await getInstagramPosts(id, queryName, { type, total });
+      const data = await getInstagramPosts(id, { queryName, type, total });
       res.send(data);
     } catch (e) {
       console.error(e);
