@@ -10,13 +10,12 @@ module.exports = class InstagramPage {
   }
 
   async initLoad(option) {
-    const filter = option.filter || 'tweets';
-    const url = `https://www.twitter.com/search?l=&vertical=default&q=${option.query}&f=${filter}`;
+    const url = `https://www.facebook.com/${option.query}`;
     option.total = option.total || 5;
     this.total = option.total;
 
     await this.page.open(url);
-    this.postsContainer = await this.scrollAndCrawlData(10 * 1000);
+    this.postsContainer = await this.crawlData();
     const returnPosts = this.postsContainer.splice(0, option.total < 5 ? option.total : 5);
     this.total -= returnPosts.length;
     return returnPosts; // at most 5 posts for first time
@@ -25,18 +24,15 @@ module.exports = class InstagramPage {
   async continueLoad() {
     if (this.total <= 0) return [];
 
-    let posts = await this.scrollAndCrawlData(1000);
+    let posts = await this.crawlData();
     this.postsContainer = this.postsContainer.concat(posts);
     const returnPosts = this.postsContainer.splice(0, this.total < posts.length ? this.total : posts.length);
     this.total -= returnPosts.length;
     return returnPosts;
   }
 
-  async scrollAndCrawlData(delay) {
-    let sleeper = function() {
-      return new Promise(resolve => setTimeout(() => resolve(), delay));
-    };
-    const resultString = await sleeper().then(() => this.page.evaluate(getTwitterDataScript));
+  async crawlData() {
+    const resultString = await this.page.evaluate(getFacebookDataScript);
     return JSON.parse(resultString);
   }
 
@@ -45,9 +41,15 @@ module.exports = class InstagramPage {
   }
 };
 
-function getTwitterDataScript() {
-  window.scrollTo(0,document.body.scrollHeight);
-  var nodeLists = document.querySelectorAll('li.js-stream-item.stream-item');
+function getFacebookDataScript() {
+  var userInfo = {};
+  userInfo.avatar = document.querySelector('[alt~="Profile"]').getAttribute('src');
+  userInfo.verified = !!document.querySelector('[aria-label="Verified Page"]');
+  var names = document.querySelector('#m-timeline-cover-section').querySelector('div').innerText.split('\n');
+  userInfo.name = names[0];
+  userInfo.address = names[1];
+
+  var nodeLists = document.querySelectorAll('[role="article"]');
   var numPosts = nodeLists.length;
   var posts = [];
   for (var i = 0; i < numPosts; i++) {

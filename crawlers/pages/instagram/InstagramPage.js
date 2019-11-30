@@ -1,17 +1,18 @@
 const { getInstagramPosts } = require('./utils');
+const config = require('../config');
 const { pullAll } = require('lodash');
 
 module.exports = class InstagramPage {
   constructor(page) {
     this.page = page;
-    page.on('onUrlChanged', function(targetUrl) {
-      if (targetUrl.includes('login')) {
-        // todo handle login exception
-      }
-    });
+    this.page.setting('userAgent', config.chrome_win_ua);
     this.page.setting('loadImages', false);
     this.total = 0;
     this.finishedUrls = [];
+  }
+
+  async login(username, password) {
+
   }
 
   async initLoad(option) {
