@@ -14,6 +14,9 @@ app.use('/instagram', instagramRoutes);
 const twitterRoutes = require('./routes/twitterRoutes');
 app.use('/twitter', twitterRoutes);
 
+const facebookRoutes = require('./routes/facebookRoutes');
+app.use('/facebook', facebookRoutes);
+
 const webConfigRoutes = require('./routes/webConfigRoutes');
 app.use('/config', webConfigRoutes);
 

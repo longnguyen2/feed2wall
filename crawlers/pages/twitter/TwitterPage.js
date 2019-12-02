@@ -66,7 +66,7 @@ function getTwitterDataScript() {
         p.replyTo.push(replyNodeLists[j].innerText);
       }
     }
-    p.text = nodeItem.querySelector('.tweet-text').innerText;
+    p.caption = nodeItem.querySelector('.tweet-text').innerText;
     var mediaNode = nodeItem.querySelector('.AdaptiveMedia');
     p.medias = [];
     if (mediaNode) {

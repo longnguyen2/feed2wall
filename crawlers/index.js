@@ -1,3 +1,3 @@
-const { getInstagramPosts, getTwitterPosts } = require('./pages');
+const { getInstagramPosts, getTwitterPosts, getFacebookPosts } = require('./pages');
 
-module.exports = { getInstagramPosts, getTwitterPosts };
+module.exports = { getInstagramPosts, getTwitterPosts, getFacebookPosts };

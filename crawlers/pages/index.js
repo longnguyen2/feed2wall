@@ -16,6 +16,14 @@ async function getTwitterPosts(id, option) {
   }
 }
 
+async function getFacebookPosts(id, option) {
+  if (id) {
+    return continueGettingPosts(id);
+  } else {
+    return initGettingPosts(id, option, 'facebook');
+  }
+}
+
 async function initGettingPosts(id, option, pageType) {
   const newId = await PagePool.createNewPage(pageType);
   const page = PagePool.getPage(newId);
@@ -29,4 +37,4 @@ async function continueGettingPosts(id) {
   return { id, posts };
 }
 
-module.exports = { getInstagramPosts, getTwitterPosts };
+module.exports = { getInstagramPosts, getTwitterPosts, getFacebookPosts };
